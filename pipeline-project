@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('cloning in GITHUB') {
+            steps {
+                echo 'cloning from GitHub'
+                   git branch: 'main', url: 'https://github.com/priyankayadav-911/javaproject.git'
+
+
+            }
+        }
+
+    
+        stage('creating artifact n Jenkins') {
+            steps {
+                echo 'creating artifact using maven build tool'
+                   sh 'mvn clean install'
+
+
+            }
+        }
+
+     
+        stage('deploying in tomcat') {
+            steps {
+                echo 'deploying the artifact in tomcat'
+                  deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://ec2-54-204-241-143.compute-1.amazonaws.com:8081')], contextPath: 'priyanka-page', war: '**/*.war'
+
+
+            }
+        }
+
+    }
+}
